@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.Entity;
 
 #if NET45
@@ -13,6 +14,7 @@ using System.Data.Spatial;
 #endif
 
 using System.Diagnostics;
+using System.Threading.Tasks;
 using EntityFramework.BulkInsert.Extensions;
 using EntityFramework.BulkInsert.Helpers;
 using EntityFramework.BulkInsert.Providers;
@@ -57,6 +59,21 @@ namespace EntityFramework.BulkInsert.Test
             {
                 Context = context;
                 return this;
+            }
+
+            public Task RunAsync<T>(IEnumerable<T> entities)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task RunAsync<T>(IEnumerable<T> entities, IDbTransaction transaction)
+            {
+                throw new NotImplementedException();
+            }
+
+            DbConnection IEfBulkInsertProvider.GetConnection()
+            {
+                throw new NotImplementedException();
             }
         }
 

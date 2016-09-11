@@ -4,6 +4,8 @@ using System.Threading;
 using EntityFramework.BulkInsert.Extensions;
 using EntityFramework.BulkInsert.Providers;
 using NUnit.Framework;
+using System.Data.Entity;
+using System.Linq;
 
 namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
 {
@@ -106,7 +108,7 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
                 {
                     var sw = new Stopwatch();
                     sw.Restart();
-                    ctx.Pages.AddRange(CreatePages(pagesCount));
+                    CreatePages(pagesCount).ToList().ForEach(p => ctx.Pages.Add(p));
                     ctx.SaveChanges();
                     sw.Stop();
                     addRange = sw.Elapsed.TotalMilliseconds;

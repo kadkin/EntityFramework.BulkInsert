@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using EntityFramework.BulkInsert.Test.Domain;
 using EntityFramework.BulkInsert.Test.Domain.ComplexTypes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntityFramework.BulkInsert.Test.CodeFirst
 {

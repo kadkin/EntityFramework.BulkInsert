@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Threading.Tasks;
 using EntityFramework.BulkInsert.Extensions;
 using EntityFramework.BulkInsert.Helpers;
 
@@ -48,6 +50,40 @@ namespace EntityFramework.BulkInsert.Providers
                     }
 
                     sqlBulkCopy.WriteToServer(reader);
+                }
+            }
+        }
+
+        public override async Task RunAsync<T>(IEnumerable<T> entities, SqlTransaction transaction)
+        {
+            var keepIdentity = (SqlBulkCopyOptions.KeepIdentity & Options.SqlBulkCopyOptions) > 0;
+            using (var reader = new MappedDataReader<T>(entities, this))
+            {
+                using (var sqlBulkCopy = new SqlBulkCopy(transaction.Connection, Options.SqlBulkCopyOptions, transaction))
+                {
+                    sqlBulkCopy.BulkCopyTimeout = Options.TimeOut;
+                    sqlBulkCopy.BatchSize = Options.BatchSize;
+                    sqlBulkCopy.DestinationTableName = string.Format("[{0}].[{1}]", reader.SchemaName, reader.TableName);
+#if !NET40
+                    sqlBulkCopy.EnableStreaming = Options.EnableStreaming;
+#endif
+
+                    sqlBulkCopy.NotifyAfter = Options.NotifyAfter;
+                    if (Options.Callback != null)
+                    {
+                        sqlBulkCopy.SqlRowsCopied += Options.Callback;
+                    }
+
+                    foreach (var kvp in reader.Cols)
+                    {
+                        if (kvp.Value.IsIdentity && !keepIdentity)
+                        {
+                            continue;
+                        }
+                        sqlBulkCopy.ColumnMappings.Add(kvp.Value.ColumnName, kvp.Value.ColumnName);
+                    }
+
+                    await sqlBulkCopy.WriteToServerAsync(reader);
                 }
             }
         }

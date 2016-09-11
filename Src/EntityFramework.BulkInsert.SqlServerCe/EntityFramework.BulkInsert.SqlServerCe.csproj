@@ -46,7 +46,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>efbulkinsert.pfx</AssemblyOriginatorKeyFile>
@@ -58,7 +58,6 @@
           <HintPath>..\packages\EntityFramework.MappingAPI.5.0.0.6\lib\net45\EntityFramework.MappingAPI.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="System.Data.Entity" />
       </ItemGroup>
     </When>
     <When Condition=" '$(Configuration)'=='NET45_EF5' ">
@@ -93,6 +92,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />

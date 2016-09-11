@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Linq;
+using System.Threading.Tasks;
 using EntityFramework.BulkInsert.Helpers;
 using EntityFramework.BulkInsert.Providers;
 
@@ -21,21 +22,21 @@ namespace EntityFramework.BulkInsert.SqlServerCe
             get { return DbConnection.ConnectionString; }
         }
 
-        /// <summary>
-        /// Get sql grography object from well known text
-        /// </summary>
-        /// <param name="wkt">Well known text representation of the value</param>
-        /// <param name="srid">The identifier associated with the coordinate system.</param>
-        /// <returns></returns>
-        public override object GetSqlGeography(string wkt, int srid)
-        {
-            throw new NotImplementedException();
-        }
+        ///// <summary>
+        ///// Get sql grography object from well known text
+        ///// </summary>
+        ///// <param name="wkt">Well known text representation of the value</param>
+        ///// <param name="srid">The identifier associated with the coordinate system.</param>
+        ///// <returns></returns>
+        //public override object GetSqlGeography(string wkt, int srid)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override object GetSqlGeometry(string wkt, int srid)
-        {
-            throw new NotImplementedException();
-        }
+        //public override object GetSqlGeometry(string wkt, int srid)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public override void Run<T>(IEnumerable<T> entities)
         {
@@ -215,6 +216,11 @@ namespace EntityFramework.BulkInsert.SqlServerCe
                 }
             }
             return colInfos;
+        }
+
+        public override Task RunAsync<T>(IEnumerable<T> entities, SqlCeTransaction transaction)
+        {
+            throw new NotImplementedException();
         }
     }
 }

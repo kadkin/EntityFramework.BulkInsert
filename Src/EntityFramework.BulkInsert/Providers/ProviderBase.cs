@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using EntityFramework.BulkInsert.Extensions;
+using System.Threading.Tasks;
+using System.Data.Common;
 
 namespace EntityFramework.BulkInsert.Providers
 {
     public abstract class ProviderBase<TConnection, TTransaction> : IEfBulkInsertProvider 
-        where TConnection : IDbConnection
+        where TConnection : DbConnection
         where TTransaction : IDbTransaction
     {
         /// <summary>
@@ -28,7 +30,7 @@ namespace EntityFramework.BulkInsert.Providers
             }
         }
 
-        protected virtual IDbConnection DbConnection
+        protected virtual DbConnection DbConnection
         {
             get { return Context.Database.Connection; }
         }
@@ -68,7 +70,7 @@ namespace EntityFramework.BulkInsert.Providers
         /// 
         /// </summary>
         /// <returns></returns>
-        public IDbConnection GetConnection()
+        public DbConnection GetConnection()
         {
             return CreateConnection();
         }
@@ -89,6 +91,58 @@ namespace EntityFramework.BulkInsert.Providers
         {
             Run(entities, (TTransaction)transaction);
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        public virtual async Task RunAsync<T>(IEnumerable<T> entities)
+        {
+            using (var dbConnection = GetConnection())
+            {
+                await dbConnection.OpenAsync();
+
+                using (var transaction = dbConnection.BeginTransaction())
+                {
+                    try
+                    {
+                        await RunAsync(entities, transaction);
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        if (transaction.Connection != null)
+                        {
+                            transaction.Rollback();
+                        }
+                        throw e;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        public Task RunAsync<T>(IEnumerable<T> entities, IDbTransaction transaction)
+        {
+            return RunAsync(entities, (TTransaction)transaction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        public abstract Task RunAsync<T>(IEnumerable<T> entities, TTransaction transaction);
+
 
         /// <summary>
         /// 

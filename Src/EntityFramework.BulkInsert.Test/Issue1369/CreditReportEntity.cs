@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 #if EF4
 using System.ComponentModel.DataAnnotations;
 #endif

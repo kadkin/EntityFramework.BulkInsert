@@ -2,6 +2,8 @@
 using System.Data;
 using System.Data.Entity;
 using EntityFramework.BulkInsert.Extensions;
+using System.Threading.Tasks;
+using System.Data.Common;
 
 namespace EntityFramework.BulkInsert.Providers
 {
@@ -11,7 +13,7 @@ namespace EntityFramework.BulkInsert.Providers
         /// 
         /// </summary>
         /// <returns></returns>
-        IDbConnection GetConnection();
+        DbConnection GetConnection();
 
         /// <summary>
         /// 
@@ -27,6 +29,17 @@ namespace EntityFramework.BulkInsert.Providers
         /// <param name="entities"></param>
         /// <param name="transaction"></param>
         void Run<T>(IEnumerable<T> entities, IDbTransaction transaction);
+
+
+        Task RunAsync<T>(IEnumerable<T> entities);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        Task RunAsync<T>(IEnumerable<T> entities, IDbTransaction transaction);
 
         /// <summary>
         /// 
